@@ -8,7 +8,7 @@ API_KEY=YOUR_API_KEY
 API_SECRET=YOUR_SECRET_KEY
 ```
 
-where API_KEY and API_KEY are the values of your application's API key and secret key respectively.
+where `YOUR_API_KEY` and `YOUR_SECRET_KEY` are the values of your application's API key and secret key respectively.
 
 To get started with this example:
 
