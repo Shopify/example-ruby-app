@@ -11,6 +11,7 @@ API_SECRET=YOUR_SECRET_KEY
 where API_KEY and API_KEY are the values of your application's API key and secret key respectively.
 
 To get started with this example:
+
 1. Create the `.env` file as described above.
-1. `bundle install` to obtain all of the necessary dependencies
-2. `ruby app.rb` to run the example application.
+2. `bundle install` to obtain all of the necessary dependencies
+3. `ruby app.rb` to run the example application.
