@@ -1,4 +1,4 @@
-# shopify-ruby-giftbasket
+# example-ruby-app
 
 This is an example Shopify application written in Sinatra solely for the purposes of introducing new developers to the Shopify API.
 
