@@ -12,7 +12,7 @@ API_SECRET=YOUR_SECRET_KEY
 
 where `YOUR_API_KEY` and `YOUR_SECRET_KEY` are the values of your application's API key and secret key respectively.
 
-To retrieve your API credentials, sign up for a [Shopify Partners account](https://app.shopify.com/services/partners/auth/login) and [follow this guide](/api/introduction/getting-started).
+To retrieve your API credentials, sign up for a [Shopify Partners account](https://app.shopify.com/services/partners/auth/login) and [follow this guide](https://help.shopify.com/api/guides/api-credentials).
 
 ## Running the app
 
