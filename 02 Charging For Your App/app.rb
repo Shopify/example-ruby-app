@@ -2,7 +2,6 @@ require 'shopify_api'
 require 'sinatra'
 require 'httparty'
 require 'dotenv'
-require 'pry'
 
 
 class GiftBasket < Sinatra::Base
@@ -12,7 +11,7 @@ class GiftBasket < Sinatra::Base
     Dotenv.load
     @key = ENV['API_KEY']
     @secret = ENV['API_SECRET']
-    @app_url = "jamie.ngrok.io"
+    @app_url = "jamied.ngrok.io"
     @tokens = {}
     super
   end
