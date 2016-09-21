@@ -2,16 +2,15 @@ require 'shopify_api'
 require 'sinatra'
 require 'httparty'
 require 'dotenv'
-
+Dotenv.load
 
 class GiftBasket < Sinatra::Base
-  attr_reader :key,:secret,:tokens
+  attr_reader :tokens
+  API_KEY = ENV['API_KEY']
+  API_SECRET = ENV['API_SECRET']
+  APP_URL = "jamie.ngrok.io"
 
   def initialize
-    Dotenv.load
-    @key = ENV['API_KEY']
-    @secret = ENV['API_SECRET']
-    @app_url = "jamied.ngrok.io"
     @tokens = {}
     super
   end
@@ -21,8 +20,8 @@ class GiftBasket < Sinatra::Base
     scopes = "read_orders,read_products,write_products"
 
     # construct the installation URL and redirect the merchant
-    install_url = "http://#{shop}/admin/oauth/authorize?client_id=#{@key}"\
-                "&scope=#{scopes}&redirect_uri=https://#{@app_url}/giftbasket/auth"
+    install_url = "http://#{shop}/admin/oauth/authorize?client_id=#{API_KEY}"\
+                "&scope=#{scopes}&redirect_uri=https://#{APP_URL}/giftbasket/auth"
 
     # redirect to the install_url
     redirect install_url
@@ -39,7 +38,7 @@ class GiftBasket < Sinatra::Base
 
     # if no access token for this particular shop exist,
     # POST the OAuth request and receive the token in the response
-    get_shop_access_token(shop,key,secret,code)
+    get_shop_access_token(shop,API_KEY,API_SECRET,code)
 
     # now that the session is activated, create a recurring application charge
     create_recurring_application_charge
@@ -50,9 +49,8 @@ class GiftBasket < Sinatra::Base
 
   get '/activatecharge' do
     # store the charge_id from the request
-    charge_id  = request.params['charge_id']
-    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.find(charge_id)
-    recurring_application_charge.status == "accepted" ? recurring_application_charge.activate : redirect(@tokens[:confirmation_url])
+    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.find(request.params['charge_id'])
+    recurring_application_charge.status == "accepted" ? recurring_application_charge.activate : redirect bulk_edit_url
 
     # once the charge is activated, subscribe to the order/create webhook and redirect the user back to the bulk edit URL
     create_order_webhook
@@ -71,7 +69,7 @@ class GiftBasket < Sinatra::Base
       shop = request.env['HTTP_X_SHOPIFY_SHOP_DOMAIN']
       token = @tokens[shop]
 
-      if not token.nil?
+      unless token.nil?
         session = ShopifyAPI::Session.new(shop, token)
         ShopifyAPI::Base.activate_session(session)
       else
@@ -140,16 +138,16 @@ class GiftBasket < Sinatra::Base
     def validate_hmac(hmac,request)
       h = request.params.reject{|k,_| k == 'hmac' || k == 'signature'}
       query = URI.escape(h.sort.collect{|k,v| "#{k}=#{v}"}.join('&'))
-      digest = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), @secret, query)
+      digest = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), API_SECRET, query)
 
-      if not (hmac == digest)
+      unless (hmac == digest)
         return [403, "Authentication failed. Digest provided was: #{digest}"]
       end
     end
 
     def verify_webhook(hmac, data)
       digest = OpenSSL::Digest.new('sha256')
-      calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, @secret, data)).strip
+      calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, API_SECRET, data)).strip
 
       hmac == calculated_hmac
     end
@@ -160,7 +158,7 @@ class GiftBasket < Sinatra::Base
         recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new(
                 name: "Gift Basket Plan",
                 price: 9.99,
-                return_url: "https:\/\/jordo.ngrok.io\/activatecharge",
+                return_url: "https:\/\/#{APP_URL}\/activatecharge",
                 test: true,
                 trial_days: 7,
                 capped_amount: 100,
@@ -184,10 +182,10 @@ class GiftBasket < Sinatra::Base
 
     def create_order_webhook
       # create webhook for order creation if it doesn't exist
-      if not ShopifyAPI::Webhook.find(:all).any?
+      unless ShopifyAPI::Webhook.find(:all).any?
         webhook = {
           topic: 'orders/create',
-          address: "https://#{@app_url}/giftbasket/webhook/order_create",
+          address: "https://#{APP_URL}/giftbasket/webhook/order_create",
           format: 'json'}
 
         ShopifyAPI::Webhook.create(webhook)
