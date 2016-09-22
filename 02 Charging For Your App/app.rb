@@ -50,7 +50,7 @@ class GiftBasket < Sinatra::Base
   get '/activatecharge' do
     # store the charge_id from the request
     recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.find(request.params['charge_id'])
-    recurring_application_charge.status == "accepted" ? recurring_application_charge.activate : redirect bulk_edit_url
+    recurring_application_charge.status == "accepted" ? recurring_application_charge.activate : redirect(bulk_edit_url)
 
     # once the charge is activated, subscribe to the order/create webhook and redirect the user back to the bulk edit URL
     create_order_webhook
