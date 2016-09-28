@@ -79,7 +79,6 @@ class GiftBasket < Sinatra::Base
       return [403, "You're not authorized to perform this action."]
     end
 
-    create_usage_charge
     # parse the request body as JSON data
     json_data = JSON.parse data
 
@@ -92,6 +91,7 @@ class GiftBasket < Sinatra::Base
 
       variant.metafields.each do |field|
         if field.key == 'ingredients'
+          create_usage_charge
           items = field.value.split(',')
 
           items.each do |item|

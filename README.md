@@ -1,6 +1,6 @@
 # Shopify App Examples
 
-This repository is home to the code examples highlighted in various [Shopify API tutorials](http://docs.myshopify.io/api/tutorials/). They are designed solely for the purposes of introducing new developers to the Shopify API. The example apps are written in [Sinatra](https://github.com/sinatra/sinatra), but the concepts presented will also apply to developers building applications in other languages such as Python, Node.js and PHP.
+This repository is home to the code examples highlighted in various [Shopify API tutorials](http://docs.myshopify.io/api/tutorials/). They are designed solely for the purpose of introducing new developers to the Shopify API. The example apps are written in [Sinatra](https://github.com/sinatra/sinatra), but the concepts presented will also apply to developers building applications in other languages such as Python, Node.js and PHP.
 
 ## Tutorial index
 
@@ -35,13 +35,5 @@ This tutorial series uses [ngrok](https://ngrok.com/) to create a secure tunnel 
 
 ## Running the app
 
-``` sh
-# navigate to the correct tutorial
-$ cd 01\ Getting\ Started/
-# create the .env and copy your API key and API secret values
-$ echo $'API_KEY=YOUR_API_KEY\nAPI_SECRET=YOUR_SECRET_KEY' >.env
-# install dependencies
-$ bundle install
-# run the app
-$ ruby app.rb
-```
+`bundle install`
+`ruby app.rb`
