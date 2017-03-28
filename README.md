@@ -36,4 +36,5 @@ This tutorial series uses [ngrok](https://ngrok.com/) to create a secure tunnel 
 ## Running the app
 
 `bundle install`
-`ruby app.rb`
+
+`ruby 01\ Getting\ Started/app.rb`
