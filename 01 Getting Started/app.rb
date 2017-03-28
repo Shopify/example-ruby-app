@@ -42,7 +42,7 @@ class GiftBasket < Sinatra::Base
 
     # create webhook for order creation if it doesn't exist
     create_order_webhook
-    
+
     # now that the session is activated, redirect to the bulk edit page
     redirect bulk_edit_url
   end
@@ -125,7 +125,7 @@ class GiftBasket < Sinatra::Base
     end
 
     def validate_hmac(hmac,request)
-      h = request.params.reject{|k,_| k == 'hmac' || k == 'signature'}
+      h = request.params.reject{|k,_| k == 'hmac'}
       query = URI.escape(h.sort.collect{|k,v| "#{k}=#{v}"}.join('&'))
       digest = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), API_SECRET, query)
 
