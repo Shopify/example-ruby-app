@@ -10,6 +10,9 @@ class GiftBasket < Sinatra::Base
   API_SECRET = ENV['API_SECRET']
   APP_URL = "jamie.ngrok.io"
 
+  fail 'API_KEY environment variable is not set' if API_KEY.blank?
+  fail 'API_SECRET environment variable is not set' if API_SECRET.blank?
+
   def initialize
     @tokens = {}
     super
