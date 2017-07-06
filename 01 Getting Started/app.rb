@@ -8,7 +8,7 @@ class GiftBasket < Sinatra::Base
   attr_reader :tokens
   API_KEY = ENV['API_KEY']
   API_SECRET = ENV['API_SECRET']
-  APP_URL = "jamie.ngrok.io"
+  APP_URL = "jamied.ngrok.io"
 
   def initialize
     @tokens = {}
@@ -42,7 +42,7 @@ class GiftBasket < Sinatra::Base
 
     # create webhook for order creation if it doesn't exist
     create_order_webhook
-    
+
     # now that the session is activated, redirect to the bulk edit page
     redirect bulk_edit_url
   end
@@ -129,7 +129,9 @@ class GiftBasket < Sinatra::Base
       query = URI.escape(h.sort.collect{|k,v| "#{k}=#{v}"}.join('&'))
       digest = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), API_SECRET, query)
 
-      unless (hmac == digest)
+      puts "ayyy lmao"
+      unless Rack::Utils.secure_compare(hmac, digest)
+        puts "double ayyy lmao"
         return [403, "Authentication failed. Digest provided was: #{digest}"]
       end
     end
@@ -138,7 +140,23 @@ class GiftBasket < Sinatra::Base
       digest = OpenSSL::Digest.new('sha256')
       calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, API_SECRET, data)).strip
 
-      hmac == calculated_hmac
+      Rack::Utils.secure_compare(hmac, calculated_hmac)
+    end
+
+    def secure_compare(a, b)
+      # Constant time string comparison taken from activesupport
+      #
+      # https://github.com/rails/rails/blob/d66e7835bea9505f7003e5038aa19b6ea95ceea1/activesupport/lib/active_support/security_utils.rb
+      #
+      # All credit for this method goes to the original authors.
+      # The code is used under the MIT license.
+      return false unless a.bytesize == b.bytesize
+
+      l = a.unpack "C#{a.bytesize}"
+
+      res = 0
+      b.each_byte { |byte| res |= byte ^ l.shift }
+      res == 0
     end
 
     def bulk_edit_url
@@ -157,6 +175,8 @@ class GiftBasket < Sinatra::Base
           format: 'json'}
 
         ShopifyAPI::Webhook.create(webhook)
+
+        ShopifyAPI::Product.find(:all)
       end
     end
   end
