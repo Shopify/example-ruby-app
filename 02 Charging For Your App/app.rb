@@ -136,7 +136,7 @@ class GiftBasket < Sinatra::Base
     end
 
     def validate_hmac(hmac,request)
-      h = request.params.reject{|k,_| k == 'hmac' || k == 'signature'}
+      h = request.params.reject{|k,_| k == 'hmac'}
       query = URI.escape(h.sort.collect{|k,v| "#{k}=#{v}"}.join('&'))
       digest = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), API_SECRET, query)
 
