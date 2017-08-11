@@ -18,7 +18,7 @@ This repository is home to the code examples highlighted in various [Shopify API
 
 Follow [this guide](https://help.shopify.com/api/getting-started/api-credentials) to obtain your public app credentials from your Shopify Partners account.
 
-This example app uses a `.env` file to store app credentials. After cloning the repository, rename `sample.env` to `.env` in the root folder of the tutorial. Copy the values of the API Key and API Secret from your partner dashboard, and use them to replace the values in `.env`.
+This example app uses a `.env` file to store app credentials. After cloning the repository, create a `.env` file in the root folder (`/example-ruby-app`) using the code snippet below. Then, copy the values of the _API Key_ and _API Secret_ from your partner dashboard, and use them as the values in `.env`.
 
 ```bash
 API_KEY=YOUR_API_KEY
