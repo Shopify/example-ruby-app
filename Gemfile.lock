@@ -31,7 +31,7 @@ GEM
     minitest (5.10.2)
     multi_xml (0.6.0)
     mustermann (1.0.0)
-    rack (2.0.3)
+    rack (2.2.6.4)
     rack-protection (2.0.0)
       rack
     shopify_api (4.9.0)
